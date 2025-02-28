@@ -29,6 +29,15 @@ if ($isPhp8OrHigher) {
 
         // Escribir en el Excel
         $sheet->setCellValue('A2', 'Prueba con PHP8 o superior');
+		
+		/** EJEMPLO FORMATO DE CELDA CON MILES */
+		$sheet->getStyle("B9:K209")->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+			
+		/** EJEMPLO OCULTAR FILAS */
+		for ($i = $CONTADOR; $i <= 208; $i++) {
+			$spreadsheet->getActiveSheet()->getRowDimension($i)->setVisible(false);
+		}
+		
         $sheet->setSelectedCell('A1');
 
         // Guardar el archivo creado
@@ -47,6 +56,15 @@ if ($isPhp8OrHigher) {
 
         // Escribir en el Excel
         $objPHPExcel->getActiveSheet()->setCellValue('A2', 'Prueba con PHP7 o anterior');
+		
+		/** EJEMPLO FORMATO DE CELDA CON MILES */
+		$objPHPExcel->getActiveSheet()->getStyle("B9:K209")->getNumberFormat()->setFormatCode('#,##0.00');
+		
+		/** EJEMPLO OCULTAR FILAS */
+		for ($i = $CONTADOR; $i <= 208; $i++) {
+			$objPHPExcel->getActiveSheet()->getRowDimension($i)->setVisible(false);
+		}
+		
         $objPHPExcel->getActiveSheet()->setSelectedCell('A1');
 
         // Guardar el archivo creado

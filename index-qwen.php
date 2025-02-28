@@ -24,6 +24,15 @@ function generarExcel($templatePath, $filename, $versionPhp8) {
         $spreadsheet = $reader->load($templatePath);
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A2', 'Prueba con PHP8 o superior');
+		
+		/** EJEMPLO FORMATO DE CELDA CON MILES */
+		$sheet->getStyle("B9:K209")->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+			
+		/** EJEMPLO OCULTAR FILAS */
+		for ($i = $CONTADOR; $i <= 208; $i++) {
+			$spreadsheet->getActiveSheet()->getRowDimension($i)->setVisible(false);
+		}
+	
         $sheet->setSelectedCell('A1');
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($filename);
@@ -32,6 +41,15 @@ function generarExcel($templatePath, $filename, $versionPhp8) {
         $objPHPExcel = PHPExcel_IOFactory::load($templatePath);
         $objPHPExcel->setActiveSheetIndex(0);
         $objPHPExcel->getActiveSheet()->setCellValue('A2', 'Prueba con PHP7 o anterior');
+		
+		/** EJEMPLO FORMATO DE CELDA CON MILES */
+		$objPHPExcel->getActiveSheet()->getStyle("B9:K209")->getNumberFormat()->setFormatCode('#,##0.00');
+		
+		/** EJEMPLO OCULTAR FILAS */
+		for ($i = $CONTADOR; $i <= 208; $i++) {
+			$objPHPExcel->getActiveSheet()->getRowDimension($i)->setVisible(false);
+		}
+	
         $objPHPExcel->getActiveSheet()->setSelectedCell('A1');
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         $objWriter->save($filename);
