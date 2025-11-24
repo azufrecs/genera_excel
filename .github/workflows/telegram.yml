@@ -1,0 +1,48 @@
+name: 📱 Notificaciones Telegram
+on: [push]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Analizar commit
+        id: analyze
+        run: |
+          echo "SHORT_SHA=${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          if echo "$COMMIT_MSG" | grep -qi "feat"; then
+            echo "ICON=✨" >> $GITHUB_OUTPUT
+            echo "TIPO=Nueva Funcionalidad" >> $GITHUB_OUTPUT
+          elif echo "$COMMIT_MSG" | grep -qi "fix\|bug"; then
+            echo "ICON=🐛" >> $GITHUB_OUTPUT
+            echo "TIPO=Corrección" >> $GITHUB_OUTPUT
+          elif echo "$COMMIT_MSG" | grep -qi "doc"; then
+            echo "ICON=📚" >> $GITHUB_OUTPUT
+            echo "TIPO=Documentación" >> $GITHUB_OUTPUT
+          elif echo "$COMMIT_MSG" | grep -qi "refactor"; then
+            echo "ICON=🔧" >> $GITHUB_OUTPUT
+            echo "TIPO=Refactorización" >> $GITHUB_OUTPUT
+          else
+            echo "ICON=📌" >> $GITHUB_OUTPUT
+            echo "TIPO=General" >> $GITHUB_OUTPUT
+          fi
+          
+      - uses: appleboy/telegram-action@v0.1.0
+        with:
+          to: "1119828821"
+          token: "8485125097:AAEb2vohfPzM5hJmYnhm8XElBvkCXqtwLSs"
+          message: |
+            ${{ steps.analyze.outputs.ICON }} ${{ steps.analyze.outputs.TIPO }}
+            
+            📂 Repositorio: ${{ github.repository }}
+            👤 Autor: ${{ github.actor }}
+            
+            💭 Mensaje:
+            ${{ github.event.head_commit.message }}
+            
+            🔧 Detalles:
+            • Hash: ${{ steps.analyze.outputs.SHORT_SHA }}
+            • Rama: ${{ github.ref_name }}
+            
+            🔗 Ver cambios:
+            ${{ github.event.head_commit.url }}
